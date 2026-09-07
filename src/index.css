@@ -1,0 +1,166 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap');
+
+@import "tailwindcss";
+
+:root {
+  font-family: 'DM Sans', sans-serif;
+  color: #26231f;
+  background: #f8f6f1;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+
+  --lc-bg: #f8f6f1;
+  --lc-white: #ffffff;
+  --lc-black: #26231f;
+  --lc-gold: #d5a943;
+  --lc-rose: #b86c78;
+  --lc-sage: #b7d2c1;
+  --lc-muted: #716c64;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--lc-bg);
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: 'DM Sans', sans-serif;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  cursor: pointer;
+}
+
+input,
+select {
+  outline: none;
+}
+
+.font-display {
+  font-family: 'Fraunces', serif;
+}
+
+::selection {
+  background: #d5a943;
+  color: #26231f;
+}
+
+/* scrollbar */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f8f6f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d5d0c8;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #bdb7ae;
+}
+
+/* smooth interaction */
+
+button,
+article,
+input,
+select {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* mobile safe area */
+
+@media (max-width: 1023px) {
+  body {
+    padding-bottom: 80px;
+  }
+}
+
+/* selection */
+
+::selection {
+  background: #d5a943;
+  color: #26231f;
+}
+
+/* ================================
+   LAPERCakes PLATFORM UTILITIES
+================================ */
+
+.lc-glass {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.lc-card {
+  border: 1px solid var(--lc-border);
+  background: white;
+  border-radius: 1.5rem;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.lc-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 45px rgba(41, 37, 31, 0.08);
+}
+
+.lc-focus {
+  outline: none;
+}
+
+.lc-focus:focus-visible {
+  outline: 3px solid rgba(232, 184, 74, 0.4);
+  outline-offset: 3px;
+}
+.form-input {
+  width: 100%;
+  border: 1px solid var(--lc-border);
+  border-radius: 1rem;
+  background: var(--lc-cream);
+  padding: 0.75rem 1rem;
+  color: var(--lc-text);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-input::placeholder {
+  color: #aaa39a;
+}
+
+.form-input:focus {
+  border-color: var(--lc-mustard-dark);
+  box-shadow: 0 0 0 3px rgb(232 184 74 / 20%);
+}
