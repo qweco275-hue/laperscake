@@ -30,6 +30,11 @@ import WishlistPage from './pages/dashboard/WishlistPage'
 
 import CheckoutPage from './pages/CheckoutPage'
 
+import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
+
+import ProtectedRoute from './components/ProtectedRoute'
+
 import AdminPage from './pages/AdminPage'
 import AdminClassesPage from './pages/AdminClassesPage'
 import AdminInstructorsPage from './pages/AdminInstructorsPage'
@@ -44,6 +49,20 @@ function App() {
       <Routes>
 
         {/* =========================
+            AUTH
+        ========================= */}
+
+        <Route
+          path="/login"
+          element={<LoginPage />}
+        />
+
+        <Route
+          path="/register"
+          element={<RegisterPage />}
+        />
+
+        {/* =========================
             PUBLIC
         ========================= */}
 
@@ -52,7 +71,10 @@ function App() {
           element={<Home />}
         />
 
-        {/* EXPLORE */}
+        {/* =========================
+            EXPLORE
+        ========================= */}
+
         <Route
           path="/explore"
           element={<ExplorePage />}
@@ -92,19 +114,16 @@ function App() {
             KELAS
         ========================= */}
 
-        {/* Navbar "Kelas" */}
         <Route
           path="/kelas"
           element={<SchedulePage />}
         />
 
-        {/* URL lama tetap diarahkan ke halaman kelas */}
         <Route
           path="/classes"
           element={<SchedulePage />}
         />
 
-        {/* Detail kelas */}
         <Route
           path="/classes/:id"
           element={<ClassDetailPage />}
@@ -116,7 +135,11 @@ function App() {
 
         <Route
           path="/my-classes"
-          element={<MyClassesPage />}
+          element={
+            <ProtectedRoute>
+              <MyClassesPage />
+            </ProtectedRoute>
+          }
         />
 
         {/* =========================
@@ -143,7 +166,7 @@ function App() {
         />
 
         {/* =========================
-            RECIPES
+            RECIPES PUBLIC
         ========================= */}
 
         <Route
@@ -186,9 +209,17 @@ function App() {
           element={<RecipeDetailPage />}
         />
 
+        {/* =========================
+            MY RECIPES
+        ========================= */}
+
         <Route
           path="/my-recipes"
-          element={<MyRecipesPage />}
+          element={
+            <ProtectedRoute>
+              <MyRecipesPage />
+            </ProtectedRoute>
+          }
         />
 
         {/* =========================
@@ -200,14 +231,23 @@ function App() {
           element={<CommunityPage />}
         />
 
+        {/* =========================
+            BLOG
+        ========================= */}
+
         <Route
           path="/blog"
           element={<BlogPage />}
         />
+
         <Route
           path="/blog/:id"
           element={<BlogDetailPage />}
         />
+
+        {/* =========================
+            MEMBERSHIP
+        ========================= */}
 
         <Route
           path="/membership"
@@ -220,37 +260,65 @@ function App() {
 
         <Route
           path="/dashboard"
-          element={<DashboardPage />}
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/dashboard/bookings"
-          element={<MyBookingsPage />}
+          element={
+            <ProtectedRoute>
+              <MyBookingsPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/dashboard/classes"
-          element={<MyClassesPage />}
+          element={
+            <ProtectedRoute>
+              <MyClassesPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/dashboard/recipes"
-          element={<MyRecipesPage />}
+          element={
+            <ProtectedRoute>
+              <MyRecipesPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/dashboard/certificates"
-          element={<CertificatesPage />}
+          element={
+            <ProtectedRoute>
+              <CertificatesPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/dashboard/rewards"
-          element={<RewardsPage />}
+          element={
+            <ProtectedRoute>
+              <RewardsPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/dashboard/wishlist"
-          element={<WishlistPage />}
+          element={
+            <ProtectedRoute>
+              <WishlistPage />
+            </ProtectedRoute>
+          }
         />
 
         {/* =========================
@@ -259,46 +327,78 @@ function App() {
 
         <Route
           path="/checkout"
-          element={<CheckoutPage />}
+          element={
+            <ProtectedRoute>
+              <CheckoutPage />
+            </ProtectedRoute>
+          }
         />
 
         {/* =========================
-            ADMIN
+            ADMIN ONLY
         ========================= */}
 
         <Route
           path="/admin"
-          element={<AdminPage />}
+          element={
+            <ProtectedRoute adminOnly>
+              <AdminPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/admin/classes"
-          element={<AdminClassesPage />}
+          element={
+            <ProtectedRoute adminOnly>
+              <AdminClassesPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/admin/instructors"
-          element={<AdminInstructorsPage />}
+          element={
+            <ProtectedRoute adminOnly>
+              <AdminInstructorsPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/admin/bookings"
-          element={<AdminBookingsPage />}
+          element={
+            <ProtectedRoute adminOnly>
+              <AdminBookingsPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/admin/users"
-          element={<AdminUsersPage />}
+          element={
+            <ProtectedRoute adminOnly>
+              <AdminUsersPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/admin/recipes"
-          element={<AdminRecipesPage />}
+          element={
+            <ProtectedRoute adminOnly>
+              <AdminRecipesPage />
+            </ProtectedRoute>
+          }
         />
 
         <Route
           path="/admin/analytics"
-          element={<AdminAnalyticsPage />}
+          element={
+            <ProtectedRoute adminOnly>
+              <AdminAnalyticsPage />
+            </ProtectedRoute>
+          }
         />
 
       </Routes>

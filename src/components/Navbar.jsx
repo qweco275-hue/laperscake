@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   Menu,
   X,
@@ -15,31 +15,89 @@ import {
   Sparkles,
   ChefHat,
   Heart,
+  LogOut,
+  LayoutDashboard,
+  ShieldCheck,
 } from 'lucide-react'
+import {
+  getCurrentUser,
+  logoutUser,
+} from '../data/authStorage'
 
 function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [exploreOpen, setExploreOpen] = useState(false)
+  const [accountOpen, setAccountOpen] = useState(false)
+  const [user, setUser] = useState(null)
 
   const location = useLocation()
+  const navigate = useNavigate()
+
+  /* ================= USER SESSION ================= */
+
+  useEffect(() => {
+    const refreshUser = () => {
+      setUser(getCurrentUser())
+    }
+
+    refreshUser()
+
+    window.addEventListener('storage', refreshUser)
+    window.addEventListener('authChanged', refreshUser)
+
+    return () => {
+      window.removeEventListener('storage', refreshUser)
+      window.removeEventListener('authChanged', refreshUser)
+    }
+  }, [location.pathname])
+
+  /* ================= ACTIVE ================= */
 
   const isActive = (path) => {
     if (path === '/') return location.pathname === '/'
-    return location.pathname === path || location.pathname.startsWith(`${path}/`)
+
+    return (
+      location.pathname === path ||
+      location.pathname.startsWith(`${path}/`)
+    )
   }
+
+  /* ================= CLOSE MENU ================= */
 
   const closeMenu = () => {
     setMobileOpen(false)
     setExploreOpen(false)
+    setAccountOpen(false)
   }
+
+  /* ================= LOGOUT ================= */
+
+  const handleLogout = () => {
+    logoutUser()
+
+    setUser(null)
+    setAccountOpen(false)
+    setMobileOpen(false)
+
+    navigate('/login', { replace: true })
+  }
+
+  /* ================= INITIAL ================= */
+
+  const userInitial =
+    user?.name?.charAt(0)?.toUpperCase() || 'U'
+
+  const isAdmin = user?.role === 'admin'
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#EBE5DA]/80 bg-[#FFFDF7]/95 backdrop-blur-xl">
 
       {/* ================= HEADER ================= */}
+
       <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-4 sm:px-8">
 
-        {/* LOGO */}
+        {/* ================= LOGO ================= */}
+
         <Link
           to="/"
           onClick={closeMenu}
@@ -61,6 +119,7 @@ function Navbar() {
         </Link>
 
         {/* ================= DESKTOP NAV ================= */}
+
         <nav className="hidden items-center gap-6 lg:flex">
 
           <NavLink
@@ -70,7 +129,8 @@ function Navbar() {
             Beranda
           </NavLink>
 
-          {/* EXPLORE */}
+          {/* ================= EXPLORE ================= */}
+
           <div
             className="relative"
             onMouseEnter={() => setExploreOpen(true)}
@@ -85,6 +145,7 @@ function Navbar() {
               }`}
             >
               Explore
+
               <ChevronDown
                 size={15}
                 className={`transition-transform duration-200 ${
@@ -99,7 +160,9 @@ function Navbar() {
                 <div className="rounded-[28px] border border-[#EBE5DA] bg-white p-5 shadow-[0_24px_70px_rgba(41,37,31,0.14)]">
 
                   {/* HEADER */}
+
                   <div className="mb-4 flex items-center justify-between border-b border-[#F0EBE2] pb-4">
+
                     <div>
                       <p className="font-display text-lg font-bold text-[#29251F]">
                         Explore LaperCakes
@@ -113,9 +176,11 @@ function Navbar() {
                     <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#FFF7E5] text-[#B57918]">
                       <Sparkles size={17} />
                     </div>
+
                   </div>
 
                   {/* MENU */}
+
                   <div className="grid grid-cols-2 gap-2">
 
                     <ExploreLink
@@ -169,12 +234,15 @@ function Navbar() {
                   </div>
 
                   {/* FOOTER */}
+
                   <Link
                     to="/explore"
                     onClick={closeMenu}
                     className="mt-4 flex items-center justify-between rounded-2xl bg-[#29251F] px-4 py-3 text-white transition hover:bg-[#403A33]"
                   >
+
                     <div className="flex items-center gap-3">
+
                       <ChefHat size={18} />
 
                       <div>
@@ -186,14 +254,20 @@ function Navbar() {
                           Cari kelas berdasarkan kebutuhanmu
                         </p>
                       </div>
+
                     </div>
 
-                    <span className="text-lg">→</span>
+                    <span className="text-lg">
+                      →
+                    </span>
+
                   </Link>
 
                 </div>
+
               </div>
             )}
+
           </div>
 
           <NavLink
@@ -234,9 +308,11 @@ function Navbar() {
         </nav>
 
         {/* ================= RIGHT SIDE ================= */}
+
         <div className="hidden items-center gap-3 lg:flex">
 
           {/* SEARCH */}
+
           <Link
             to="/explore"
             className="flex h-10 w-10 items-center justify-center rounded-full border border-[#EBE5DA] bg-white transition hover:border-[#E8B84A] hover:bg-[#FFF7E5]"
@@ -246,6 +322,7 @@ function Navbar() {
           </Link>
 
           {/* WISHLIST */}
+
           <Link
             to="/dashboard/wishlist"
             className="flex h-10 w-10 items-center justify-center rounded-full border border-[#EBE5DA] bg-white transition hover:border-[#D98C9B] hover:bg-[#FFF3F5]"
@@ -254,16 +331,158 @@ function Navbar() {
             <Heart size={17} />
           </Link>
 
-          {/* ACCOUNT */}
-          <Link
-            to="/dashboard"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#EBE5DA] bg-white transition hover:border-[#E8B84A] hover:bg-[#FFF7E5]"
-            aria-label="Dashboard"
-          >
-            <UserRound size={17} />
-          </Link>
+          {/* ================= ACCOUNT ================= */}
+
+          {user ? (
+            <div className="relative">
+
+              <button
+                type="button"
+                onClick={() => setAccountOpen((prev) => !prev)}
+                className="flex items-center gap-2 rounded-full border border-[#EBE5DA] bg-white py-1.5 pl-1.5 pr-3 transition hover:border-[#E8B84A] hover:bg-[#FFF7E5]"
+              >
+
+                {/* AVATAR */}
+
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8B84A] text-sm font-bold text-[#29251F]">
+                  {userInitial}
+                </div>
+
+                <div className="max-w-[100px] text-left">
+                  <p className="truncate text-xs font-bold text-[#29251F]">
+                    {user.name}
+                  </p>
+
+                  <p className="text-[9px] uppercase tracking-wider text-[#756F66]">
+                    {isAdmin ? 'Admin' : 'Member'}
+                  </p>
+                </div>
+
+                <ChevronDown
+                  size={14}
+                  className={`text-[#756F66] transition ${
+                    accountOpen ? 'rotate-180' : ''
+                  }`}
+                />
+
+              </button>
+
+              {/* ACCOUNT DROPDOWN */}
+
+              {accountOpen && (
+                <div className="absolute right-0 top-full mt-3 w-64 rounded-2xl border border-[#EBE5DA] bg-white p-2 shadow-[0_20px_60px_rgba(41,37,31,0.15)]">
+
+                  {/* USER INFO */}
+
+                  <div className="border-b border-[#F0EBE2] px-3 py-3">
+
+                    <p className="truncate text-sm font-bold text-[#29251F]">
+                      {user.name}
+                    </p>
+
+                    <p className="mt-1 truncate text-xs text-[#756F66]">
+                      {user.email}
+                    </p>
+
+                  </div>
+
+                  {/* DASHBOARD */}
+
+                  <Link
+                    to="/dashboard"
+                    onClick={closeMenu}
+                    className="mt-1 flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-[#29251F] transition hover:bg-[#FFF7E5]"
+                  >
+
+                    <LayoutDashboard
+                      size={18}
+                      className="text-[#B57918]"
+                    />
+
+                    Dashboard
+
+                  </Link>
+
+                  {/* ADMIN DASHBOARD */}
+
+                  {isAdmin && (
+                    <Link
+                      to="/admin"
+                      onClick={closeMenu}
+                      className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-[#29251F] transition hover:bg-[#FFF7E5]"
+                    >
+
+                      <ShieldCheck
+                        size={18}
+                        className="text-[#4F8065]"
+                      />
+
+                      Admin Dashboard
+
+                    </Link>
+                  )}
+
+                  {/* PROFILE */}
+
+                  <Link
+                    to="/dashboard"
+                    onClick={closeMenu}
+                    className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-[#29251F] transition hover:bg-[#FFF7E5]"
+                  >
+
+                    <UserRound
+                      size={18}
+                      className="text-[#756F66]"
+                    />
+
+                    Akun Saya
+
+                  </Link>
+
+                  {/* LOGOUT */}
+
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="mt-1 flex w-full items-center gap-3 rounded-xl border-t border-[#F0EBE2] px-3 py-3 text-left text-sm font-semibold text-[#A95D6C] transition hover:bg-[#FFF3F5]"
+                  >
+
+                    <LogOut size={18} />
+
+                    Logout
+
+                  </button>
+
+                </div>
+              )}
+
+            </div>
+          ) : (
+
+            /* ================= NOT LOGGED IN ================= */
+
+            <div className="flex items-center gap-2">
+
+              <Link
+                to="/login"
+                className="rounded-full px-4 py-2.5 text-sm font-bold text-[#29251F] transition hover:bg-[#FFF7E5]"
+              >
+                Masuk
+              </Link>
+
+              <Link
+                to="/register"
+                className="rounded-full border border-[#EBE5DA] bg-white px-4 py-2.5 text-sm font-bold text-[#29251F] transition hover:border-[#E8B84A] hover:bg-[#FFF7E5]"
+              >
+                Daftar
+              </Link>
+
+            </div>
+
+          )}
 
           {/* CTA */}
+
           <Link
             to="/explore"
             className="rounded-full bg-[#29251F] px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#403A33] hover:shadow-lg"
@@ -274,18 +493,24 @@ function Navbar() {
         </div>
 
         {/* ================= MOBILE BUTTON ================= */}
+
         <button
           type="button"
           onClick={() => setMobileOpen(!mobileOpen)}
           className="flex h-10 w-10 items-center justify-center rounded-full border border-[#EBE5DA] bg-white transition hover:bg-[#FFF7E5] lg:hidden"
           aria-label={mobileOpen ? 'Tutup menu' : 'Buka menu'}
         >
-          {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+          {mobileOpen ? (
+            <X size={20} />
+          ) : (
+            <Menu size={20} />
+          )}
         </button>
 
       </div>
 
       {/* ================= MOBILE MENU ================= */}
+
       {mobileOpen && (
         <div className="border-t border-[#EBE5DA] bg-[#FFFDF7] px-4 py-5 shadow-lg lg:hidden">
 
@@ -363,23 +588,99 @@ function Navbar() {
               Membership
             </MobileLink>
 
-            <MobileLink
-              to="/dashboard/wishlist"
-              active={isActive('/dashboard/wishlist')}
-              onClick={closeMenu}
-            >
-              Wishlist
-            </MobileLink>
+            {/* ================= LOGGED IN MOBILE ================= */}
 
-            <MobileLink
-              to="/dashboard"
-              active={isActive('/dashboard')}
-              onClick={closeMenu}
-            >
-              Dashboard
-            </MobileLink>
+            {user ? (
+              <>
+                <div className="my-3 border-t border-[#EBE5DA]" />
+
+                {/* USER INFO */}
+
+                <div className="flex items-center gap-3 rounded-2xl bg-white border border-[#EBE5DA] p-3">
+
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#E8B84A] font-bold text-[#29251F]">
+                    {userInitial}
+                  </div>
+
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-bold text-[#29251F]">
+                      {user.name}
+                    </p>
+
+                    <p className="truncate text-xs text-[#756F66]">
+                      {user.email}
+                    </p>
+                  </div>
+
+                </div>
+
+                <MobileLink
+                  to="/dashboard/wishlist"
+                  active={isActive('/dashboard/wishlist')}
+                  onClick={closeMenu}
+                >
+                  Wishlist
+                </MobileLink>
+
+                <MobileLink
+                  to="/dashboard"
+                  active={isActive('/dashboard')}
+                  onClick={closeMenu}
+                >
+                  Dashboard
+                </MobileLink>
+
+                {isAdmin && (
+                  <MobileLink
+                    to="/admin"
+                    active={isActive('/admin')}
+                    onClick={closeMenu}
+                  >
+                    Admin Dashboard
+                  </MobileLink>
+                )}
+
+                {/* LOGOUT */}
+
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="mt-2 flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-semibold text-[#A95D6C] transition hover:bg-[#FFF3F5]"
+                >
+                  <LogOut size={18} />
+
+                  Logout
+                </button>
+              </>
+            ) : (
+
+              /* ================= NOT LOGGED IN MOBILE ================= */
+
+              <>
+                <div className="my-3 border-t border-[#EBE5DA]" />
+
+                <Link
+                  to="/login"
+                  onClick={closeMenu}
+                  className="flex items-center justify-center gap-2 rounded-xl border border-[#EBE5DA] bg-white px-4 py-3 text-sm font-bold text-[#29251F] transition hover:bg-[#FFF7E5]"
+                >
+                  <UserRound size={17} />
+
+                  Masuk
+                </Link>
+
+                <Link
+                  to="/register"
+                  onClick={closeMenu}
+                  className="mt-2 flex items-center justify-center gap-2 rounded-xl bg-[#29251F] px-4 py-3 text-sm font-bold text-white transition hover:bg-[#403A33]"
+                >
+                  Daftar
+                </Link>
+              </>
+            )}
 
             {/* MOBILE CTA */}
+
             <div className="pt-4">
 
               <Link
@@ -388,12 +689,14 @@ function Navbar() {
                 className="flex items-center justify-center gap-2 rounded-full bg-[#29251F] px-5 py-3.5 text-sm font-bold text-white transition hover:bg-[#403A33]"
               >
                 <Search size={16} />
+
                 Cari Kelas
               </Link>
 
             </div>
 
           </div>
+
         </div>
       )}
 
@@ -405,7 +708,11 @@ function Navbar() {
    DESKTOP NAV LINK
 ========================================================= */
 
-function NavLink({ to, active, children }) {
+function NavLink({
+  to,
+  active,
+  children,
+}) {
   return (
     <Link
       to={to}
@@ -447,6 +754,7 @@ function ExploreLink({
       </div>
 
       <div className="min-w-0">
+
         <p className="text-sm font-bold text-[#29251F]">
           {title}
         </p>
@@ -454,6 +762,7 @@ function ExploreLink({
         <p className="mt-1 text-xs leading-5 text-[#756F66]">
           {description}
         </p>
+
       </div>
 
     </Link>
@@ -480,11 +789,15 @@ function MobileLink({
           : 'text-[#29251F] hover:bg-[#FFF7E5]'
       }`}
     >
-      <span>{children}</span>
+
+      <span>
+        {children}
+      </span>
 
       {active && (
         <span className="h-1.5 w-1.5 rounded-full bg-[#E8B84A]" />
       )}
+
     </Link>
   )
 }
