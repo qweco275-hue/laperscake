@@ -16,9 +16,6 @@ import RecipeDetailPage from './pages/RecipeDetailPage'
 import MyRecipesPage from './pages/MyRecipesPage'
 import RecipesPage from './pages/RecipesPage'
 
-import CommunityPage from './pages/CommunityPage'
-import BlogPage from './pages/BlogPage'
-import BlogDetailPage from './pages/BlogDetailPage'
 import MembershipPage from './pages/MembershipPage'
 
 import DashboardPage from './pages/DashboardPage'
@@ -220,29 +217,6 @@ function App() {
               <MyRecipesPage />
             </ProtectedRoute>
           }
-        />
-
-        {/* =========================
-            COMMUNITY
-        ========================= */}
-
-        <Route
-          path="/community"
-          element={<CommunityPage />}
-        />
-
-        {/* =========================
-            BLOG
-        ========================= */}
-
-        <Route
-          path="/blog"
-          element={<BlogPage />}
-        />
-
-        <Route
-          path="/blog/:id"
-          element={<BlogDetailPage />}
         />
 
         {/* =========================
