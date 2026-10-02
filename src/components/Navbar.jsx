@@ -291,20 +291,6 @@ function Navbar() {
             Resep
           </NavLink>
 
-          <NavLink
-            to="/community"
-            active={isActive('/community')}
-          >
-            Komunitas
-          </NavLink>
-
-          <NavLink
-            to="/blog"
-            active={isActive('/blog')}
-          >
-            Blog
-          </NavLink>
-
         </nav>
 
         {/* ================= RIGHT SIDE ================= */}
@@ -562,22 +548,6 @@ function Navbar() {
               onClick={closeMenu}
             >
               Toko Resep
-            </MobileLink>
-
-            <MobileLink
-              to="/community"
-              active={isActive('/community')}
-              onClick={closeMenu}
-            >
-              Komunitas
-            </MobileLink>
-
-            <MobileLink
-              to="/blog"
-              active={isActive('/blog')}
-              onClick={closeMenu}
-            >
-              Blog
             </MobileLink>
 
             <MobileLink
